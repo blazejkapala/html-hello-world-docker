@@ -9,7 +9,6 @@ WORKDIR /app
 
 # Skopiuj pliki go.mod i go.sum (jeśli istnieją)
 COPY go.mod ./
-COPY go.sum* ./
 
 # Pobierz zależności
 RUN go mod download
@@ -23,8 +22,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 # Etap produkcyjny (production stage)
 FROM alpine:latest
 
-# Zainstaluj ca-certificates dla HTTPS requests
-RUN apk --no-cache add ca-certificates
+# Zainstaluj ca-certificates i wget dla health checks
+RUN apk --no-cache add ca-certificates wget
 
 # Utwórz użytkownika bez uprawnień root
 RUN addgroup -g 1001 -S appgroup && \
